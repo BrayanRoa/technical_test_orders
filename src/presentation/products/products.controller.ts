@@ -1,16 +1,11 @@
 import { Request, Response } from "express";
-import { UserRepository } from "../../domain/repositories/user.repository";
-import { GetUsers } from "../../domain/use-cases/users/get-users";
-import { GetUser } from "../../domain/use-cases/users/get-user";
-import { CreateUser } from "../../domain/use-cases/users/create-user";
-import { UpdateUser } from "../../domain/use-cases/users/update-user";
-import { DeleteUser } from "../../domain/use-cases/users/delete-user";
 import { CustomResponse } from "../../utils/response/custom.response";
-import { EmailService } from "../../utils/emails/email.service";
-import { envs } from "../../config/envs";
 import { ProductsRepository } from "../../domain/repositories/products.repository";
 import { CreatePruduct } from "../../domain/use-cases/products/create-product";
 import { GetProducts } from "../../domain/use-cases/products/get-all-products";
+import { GetOneProduct } from "../../domain/use-cases/products/get-one-product";
+import { UpdateProduct } from "../../domain/use-cases/products/update-product";
+import { DeleteProduct } from "../../domain/use-cases/products/delete-product";
 
 export class ProductsController {
     constructor(
@@ -26,13 +21,13 @@ export class ProductsController {
             .catch(err => CustomResponse.handleResponse(res, err))
     }
 
-    // public getOne = (req: Request, res: Response) => {
-    //     const id = req.params.id
-    //     new GetUser(this.userRepository)
-    //         .execute(id)
-    //         .then(user => CustomResponse.handleResponse(res, user, 200))
-    //         .catch(err => CustomResponse.handleResponse(res, err))
-    // }
+    public getOne = (req: Request, res: Response) => {
+        const id = req.params.id
+        new GetOneProduct(this.productRepository)
+            .execute(id)
+            .then(user => CustomResponse.handleResponse(res, user, 200))
+            .catch(err => CustomResponse.handleResponse(res, err))
+    }
 
     public create = (req: Request, res: Response) => {
         console.log("llegue");
@@ -43,21 +38,21 @@ export class ProductsController {
             .catch(err => CustomResponse.handleResponse(res, err))
     }
 
-    // public update = async (req: Request, res: Response) => {
-    //     const id = req.params.id
-    //     const { email_user, ...rest } = req.body
-    //     new UpdateUser(this.userRepository)
-    //         .execute(id, rest, email_user)
-    //         .then(user => CustomResponse.handleResponse(res, user, 200))
-    //         .catch(err => CustomResponse.handleResponse(res, err))
-    // }
+    public update = async (req: Request, res: Response) => {
+        const id = req.params.id
+        const { email_user, ...rest } = req.body
+        new UpdateProduct(this.productRepository)
+            .execute(id, rest, email_user)
+            .then(user => CustomResponse.handleResponse(res, user, 200))
+            .catch(err => CustomResponse.handleResponse(res, err))
+    }
 
-    // public delete = async (req: Request, res: Response) => {
-    //     const id = req.params.id;
-    //     const { email_user } = req.body
-    //     new DeleteUser(this.userRepository)
-    //         .execute(id, email_user)
-    //         .then(user => CustomResponse.handleResponse(res, user, 200))
-    //         .catch(err => CustomResponse.handleResponse(res, err))
-    // }
+    public delete = async (req: Request, res: Response) => {
+        const id = req.params.id;
+        const { email_user } = req.body
+        new DeleteProduct(this.productRepository)
+            .execute(id, email_user)
+            .then(user => CustomResponse.handleResponse(res, user, 200))
+            .catch(err => CustomResponse.handleResponse(res, err))
+    }
 }

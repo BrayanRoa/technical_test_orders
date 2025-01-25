@@ -79,69 +79,6 @@ export class ProductsRoutes extends BaseRouter<ProductsController, ProductMiddle
 
         /**
          * @swagger
-         * /users/{id}:
-         *  get:
-         *    tags: [Users]
-         *    summary: Obtiene un usuario por su ID
-         *    parameters:
-         *      - in: path
-         *        name: id
-         *        schema:
-         *          type: string
-         *        required: true
-         *        description: ID del usuario
-         *    responses:
-         *      '200':
-         *        description: Operación exitosa
-         *        content:
-         *          application/json:
-         *            schema:
-         *              type: object
-         *              properties:
-         *                status:
-         *                  type: integer
-         *                  example: 200
-         *                statusMsg:
-         *                  type: string
-         *                  example: SUCCESS
-         *                data:
-         *                  type: object
-         *                  properties:
-         *                    id:
-         *                      type: string
-         *                      example: d9df9616-8d10-4992-a20a-8974d30481a8
-         *                    created_at:
-         *                      type: string
-         *                      format: date-time
-         *                      example: 2024-04-11T03:44:40.257Z
-         *                    updated_at:
-         *                      type: string
-         *                      format: date-time
-         *                      example: 2024-04-11T03:45:02.276Z
-         *                    deleted_at:
-         *                      type: string
-         *                      format: date-time
-         *                    name:
-         *                      type: string
-         *                      example: brayan
-         *                    email:
-         *                      type: string
-         *                      example: brayanandresrl@ufps.edu.co
-         *                    email_sent:
-         *                      type: boolean
-         *                      example: true
-         *                    emailValidated:
-         *                      type: boolean
-         *                      example: true
-         */
-        // this.router.get(`${prefix}/:id`,
-        //     // (req, res, next) => this.middleware.validarJwt(req, res, next), 
-        //     [this.middleware.validarJwt],
-        //     this.controller.getOne
-        // )
-
-        /**
-         * @swagger
          * /products:
          *  post:
          *    tags: [Products]
@@ -219,15 +156,263 @@ export class ProductsRoutes extends BaseRouter<ProductsController, ProductMiddle
             this.controller.create
         )
 
-        // this.router.put(`${prefix}/:id`,
-        //     (req, res, next) => this.middleware.validarJwt(req, res, next),
-        //     (req, res, next) => this.middleware.validateDto(req, res, next, "update"),
-        //     this.controller.update
-        // )
+        /**
+         * @swagger
+         * /products/{id}:
+         *  get:
+         *    tags: [Products]
+         *    summary: Get a single product.
+         *    description: Retrieves the details of a product by its ID.
+         *    parameters:
+         *      - in: path
+         *        name: id
+         *        required: true
+         *        schema:
+         *          type: string
+         *        description: The ID of the product to retrieve.
+         *    responses:
+         *      '200':
+         *        description: Product retrieved successfully.
+         *        content:
+         *          application/json:
+         *            schema:
+         *              type: object
+         *              properties:
+         *                id:
+         *                  type: string
+         *                  example: "abc123"
+         *                name:
+         *                  type: string
+         *                  example: "Laptop"
+         *                description:
+         *                  type: string
+         *                  example: "A high-performance laptop for professionals."
+         *                price:
+         *                  type: number
+         *                  example: 999.99
+         *      '404':
+         *        description: Product not found.
+         *        content:
+         *          application/json:
+         *            schema:
+         *              type: object
+         *              properties:
+         *                status:
+         *                  type: integer
+         *                  example: 404
+         *                statusMsg:
+         *                  type: string
+         *                  example: ERROR
+         *                msg:
+         *                  type: string
+         *                  example: Product not found.
+         *      '500':
+         *        description: Internal server error.
+         *        content:
+         *          application/json:
+         *            schema:
+         *              type: object
+         *              properties:
+         *                status:
+         *                  type: integer
+         *                  example: 500
+         *                statusMsg:
+         *                  type: string
+         *                  example: ERROR
+         *                msg:
+         *                  type: string
+         *                  example: An error occurred while retrieving the product.
+         */
+        this.router.get(`${prefix}/:id`,
+            (req, res, next) => this.middleware.validarJwt(req, res, next),
+            this.controller.getOne
+        )
 
-        // this.router.delete(`${prefix}/:id`,
-        //     (req, res, next) => this.middleware.validarJwt(req, res, next),
-        //     this.controller.delete
-        // )
+        /**
+         * @swagger
+         * /products/{id}:
+         *  patch:
+         *    tags: [Products]
+         *    summary: Update a product.
+         *    description: Updates the details of an existing product by its ID.
+         *    parameters:
+         *      - in: path
+         *        name: id
+         *        required: true
+         *        schema:
+         *          type: string
+         *        description: The ID of the product to update.
+         *    requestBody:
+         *      required: true
+         *      content:
+         *        application/json:
+         *          schema:
+         *            type: object
+         *            properties:
+         *              name:
+         *                type: string
+         *                example: "Updated Laptop"
+         *              description:
+         *                type: string
+         *                example: "An updated description for the laptop."
+         *              price:
+         *                type: number
+         *                example: 1099.99
+         *    responses:
+         *      '200':
+         *        description: Product updated successfully.
+         *        content:
+         *          application/json:
+         *            schema:
+         *              type: object
+         *              properties:
+         *                status:
+         *                  type: integer
+         *                  example: 200
+         *                statusMsg:
+         *                  type: string
+         *                  example: SUCCESS
+         *                msg:
+         *                  type: string
+         *                  example: Product updated successfully.
+         *                data:
+         *                  type: object
+         *                  properties:
+         *                    id:
+         *                      type: string
+         *                      example: "abc123"
+         *                    name:
+         *                      type: string
+         *                      example: "Updated Laptop"
+         *                    description:
+         *                      type: string
+         *                      example: "An updated description for the laptop."
+         *                    price:
+         *                      type: number
+         *                      example: 1099.99
+         *      '400':
+         *        description: Invalid input data.
+         *        content:
+         *          application/json:
+         *            schema:
+         *              type: object
+         *              properties:
+         *                status:
+         *                  type: integer
+         *                  example: 400
+         *                statusMsg:
+         *                  type: string
+         *                  example: ERROR
+         *                msg:
+         *                  type: string
+         *                  example: Invalid input data.
+         *      '404':
+         *        description: Product not found.
+         *        content:
+         *          application/json:
+         *            schema:
+         *              type: object
+         *              properties:
+         *                status:
+         *                  type: integer
+         *                  example: 404
+         *                statusMsg:
+         *                  type: string
+         *                  example: ERROR
+         *                msg:
+         *                  type: string
+         *                  example: Product not found.
+         *      '500':
+         *        description: Internal server error.
+         *        content:
+         *          application/json:
+         *            schema:
+         *              type: object
+         *              properties:
+         *                status:
+         *                  type: integer
+         *                  example: 500
+         *                statusMsg:
+         *                  type: string
+         *                  example: ERROR
+         *                msg:
+         *                  type: string
+         *                  example: An error occurred while updating the product.
+         */
+        this.router.patch(`${prefix}/:id`,
+            (req, res, next) => this.middleware.validarJwt(req, res, next),
+            (req, res, next) => this.middleware.validateDto(req, res, next, "update"),
+            this.controller.update
+        )
+
+        /**
+         * @swagger
+         * /products/{id}:
+         *  delete:
+         *    tags: [Products]
+         *    summary: Delete a product.
+         *    description: Deletes a product by its ID.
+         *    parameters:
+         *      - in: path
+         *        name: id
+         *        required: true
+         *        schema:
+         *          type: string
+         *        description: The ID of the product to delete.
+         *    responses:
+         *      '200':
+         *        description: Product deleted successfully.
+         *        content:
+         *          application/json:
+         *            schema:
+         *              type: object
+         *              properties:
+         *                status:
+         *                  type: integer
+         *                  example: 200
+         *                statusMsg:
+         *                  type: string
+         *                  example: SUCCESS
+         *                msg:
+         *                  type: string
+         *                  example: Product deleted successfully.
+         *      '404':
+         *        description: Product not found.
+         *        content:
+         *          application/json:
+         *            schema:
+         *              type: object
+         *              properties:
+         *                status:
+         *                  type: integer
+         *                  example: 404
+         *                statusMsg:
+         *                  type: string
+         *                  example: ERROR
+         *                msg:
+         *                  type: string
+         *                  example: Product not found.
+         *      '500':
+         *        description: Internal server error.
+         *        content:
+         *          application/json:
+         *            schema:
+         *              type: object
+         *              properties:
+         *                status:
+         *                  type: integer
+         *                  example: 500
+         *                statusMsg:
+         *                  type: string
+         *                  example: ERROR
+         *                msg:
+         *                  type: string
+         *                  example: An error occurred while deleting the product.
+         */
+        this.router.delete(`${prefix}/:id`,
+            (req, res, next) => this.middleware.validarJwt(req, res, next),
+            this.controller.delete
+        )
+
     }
 }

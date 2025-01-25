@@ -55,13 +55,58 @@ export class ProductDatasourceImp extends BaseDatasource implements ProductsData
         })
     }
     findById(id: string): Promise<ProductEntity | CustomResponse> {
-        throw new Error("Method not implemented.");
+        return this.handleErrors(async () => {
+            const data = await BaseDatasource.prisma.product.findUnique({
+                where: {
+                    id: id,
+                    deletedAt: null
+                }
+            })
+            if (!data) {
+                throw new CustomResponse("Product not found", 404)
+            }
+            return ProductEntity.fromObject(data)
+        })
     }
     update(id: string, updateProductDto: UpdateProductDto, user_audits: string): Promise<ProductEntity | CustomResponse> {
-        throw new Error("Method not implemented.");
+        return this.handleErrors(async () => {
+            const data = await BaseDatasource.prisma.product.update({
+                where: {
+                    id: id,
+                    deletedAt: null
+                },
+                data: updateProductDto
+            })
+
+            if (!data) {
+                throw new CustomResponse("Product not found", 404)
+            }
+
+            this.auditSave(data, "UPDATE", user_audits)
+
+            return ProductEntity.fromObject(data)
+        })
     }
     delete(id: string, user_audits: string): Promise<ProductEntity | CustomResponse> {
-        throw new Error("Method not implemented.");
+        return this.handleErrors(async () => {
+            const data = await BaseDatasource.prisma.product.update({
+                where: {
+                    id: id,
+                    deletedAt: null
+                },
+                data: {
+                    deletedAt: new Date()
+                }
+            })
+
+            if (!data) {
+                throw new CustomResponse("Product not found", 404)
+            }
+
+            this.auditSave(data, "DELETE", user_audits)
+
+            return ProductEntity.fromObject(data)
+        })
     }
 
 }
