@@ -24,15 +24,13 @@ export class UserDatasourceImp extends BaseDatasource implements UserDatasource 
             return { ...rest };
         });
     }
-    getAll(page: number, per_page: number): Promise<UserEntity[] | CustomResponse> {
+    getAll(): Promise<UserEntity[] | CustomResponse> {
         return this.handleErrors(async () => {
             const users = await BaseDatasource.prisma.user.findMany({
                 where: {
                     AND:
                         [
-                            { email_sent: true },
-                            { emailValidated: true },
-                            { deleted_at: null }
+                            { deletedAt: null }
                         ]
                 }
             })
@@ -51,8 +49,7 @@ export class UserDatasourceImp extends BaseDatasource implements UserDatasource 
                 where: {
                     AND:
                         [
-                            { id, deleted_at: null },
-                            { emailValidated: true }
+                            { id, deletedAt: null },
                         ]
                 }
             });
@@ -75,7 +72,7 @@ export class UserDatasourceImp extends BaseDatasource implements UserDatasource 
         return this.handleErrors(async () => {
             const deleted = await BaseDatasource.prisma.user.update({
                 where: { id },
-                data: { deleted_at: new Date() }
+                data: { deletedAt: new Date() }
             })
             this.auditSave(deleted, "DELETE", user_audits)
             return UserEntity.fromObject(deleted);

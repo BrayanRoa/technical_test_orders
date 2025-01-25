@@ -14,17 +14,53 @@ datasource db {
 }
 
 model User {
-  id             String    @id @default(uuid())
-  email          String    @unique
-  emailValidated Boolean   @default(false)
-  email_sent     Boolean   @default(false)
-  password       String
-  name           String
-  created_at     DateTime  @default(now())
-  updated_at     DateTime  @updatedAt
-  deleted_at     DateTime?
+  id        String    @id @default(uuid())
+  username  String    @unique
+  email     String    @unique
+  password  String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime? // Este campo puede ser null si el usuario no está eliminado
+  orders    Order[]
+}
 
-  @@map(name: "users")
+model Order {
+  id        String    @id @default(uuid())
+  userId    String
+  status    String // Ejemplo: "En preparación", "En camino", "Entregado"
+  total     Float     @default(0)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime? // Puede ser null si el pedido no está eliminado
+
+  user    User          @relation(fields: [userId], references: [id])
+  details OrderDetail[]
+}
+
+model Product {
+  id          String    @id @default(uuid())
+  name        String
+  description String?
+  price       Float
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime? // Puede ser null si el producto no está eliminado
+
+  orderDetails OrderDetail[]
+}
+
+model OrderDetail {
+  id        String    @id @default(uuid())
+  orderId   String
+  productId String
+  quantity  Int
+  price     Float // Precio del producto al momento de la compra
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime? // Puede ser null si el detalle no está eliminado
+
+  order   Order   @relation(fields: [orderId], references: [id])
+  product Product @relation(fields: [productId], references: [id])
 }
 
 model Audists {

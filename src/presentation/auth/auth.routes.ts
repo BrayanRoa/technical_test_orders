@@ -86,7 +86,7 @@ export class AuthRoutes extends BaseRouter<AuthController, AuthMiddleware, AuthR
         *          schema:
         *            type: object
         *            properties:
-        *              name:
+        *              username:
         *                type: string
         *              email:
         *                type: string
