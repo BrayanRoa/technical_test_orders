@@ -41,4 +41,13 @@ export class BaseDatasource {
         })
     }
 
+    calculateMeta(totalRecords: number, perPage: number, currentPage: number) {
+        return {
+            totalRecords,
+            totalPages: Math.ceil(totalRecords / perPage),
+            currentPage,
+            next_page: totalRecords > currentPage * perPage,
+        };
+    }
+
 }
