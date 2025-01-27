@@ -432,5 +432,139 @@ export class OrdersRoutes extends BaseRouter<OrdersController, OrdersMiddleware,
         this.router.delete(`${prefix}/:id`,
             (req, res, next) => this.middleware.validarJwt(req, res, next),
             this.controller.delete)
+
+        /**
+         * @swagger
+         * /orders/{id}/status:
+         *   get:
+         *     tags:
+         *       - Orders
+         *     summary: Get a single order by its ID
+         *     description: Retrieves the details of an existing order using its unique identifier. Requires a valid JWT token for authentication.
+         *     parameters:
+         *       - in: path
+         *         name: id
+         *         required: true
+         *         schema:
+         *           type: string
+         *         description: The unique identifier of the order to retrieve.
+         *     responses:
+         *       200:
+         *         description: Order retrieved successfully.
+         *         content:
+         *           application/json:
+         *             schema:
+         *               type: object
+         *               properties:
+         *                 status:
+         *                   type: integer
+         *                   example: 200
+         *                 statusMsg:
+         *                   type: string
+         *                   example: SUCCESS
+         *                 data:
+         *                   type: object
+         *                   properties:
+         *                     id:
+         *                       type: string
+         *                       description: The unique identifier of the order.
+         *                       example: "123e4567-e89b-12d3-a456-426614174000"
+         *                     userId:
+         *                       type: string
+         *                       description: The ID of the user who placed the order.
+         *                       example: "user-456"
+         *                     status:
+         *                       type: string
+         *                       description: The status of the order.
+         *                       example: "COMPLETED"
+         *                     total:
+         *                       type: number
+         *                       description: The total cost of the order.
+         *                       example: 150.5
+         *                     detail:
+         *                       type: array
+         *                       items:
+         *                         type: object
+         *                         properties:
+         *                           productId:
+         *                             type: string
+         *                             description: The unique identifier of the product.
+         *                             example: "product-123"
+         *                           quantity:
+         *                             type: integer
+         *                             description: The quantity of the product ordered.
+         *                             example: 2
+         *                           price:
+         *                             type: number
+         *                             description: The price of the product.
+         *                             example: 75.25
+         *       400:
+         *         description: Invalid order ID.
+         *         content:
+         *           application/json:
+         *             schema:
+         *               type: object
+         *               properties:
+         *                 status:
+         *                   type: integer
+         *                   example: 400
+         *                 statusMsg:
+         *                   type: string
+         *                   example: ERROR
+         *                 msg:
+         *                   type: string
+         *                   example: Invalid order ID
+         *       401:
+         *         description: Unauthorized. Missing or invalid JWT token.
+         *         content:
+         *           application/json:
+         *             schema:
+         *               type: object
+         *               properties:
+         *                 status:
+         *                   type: integer
+         *                   example: 401
+         *                 statusMsg:
+         *                   type: string
+         *                   example: ERROR
+         *                 msg:
+         *                   type: string
+         *                   example: Unauthorized
+         *       404:
+         *         description: Order not found.
+         *         content:
+         *           application/json:
+         *             schema:
+         *               type: object
+         *               properties:
+         *                 status:
+         *                   type: integer
+         *                   example: 404
+         *                 statusMsg:
+         *                   type: string
+         *                   example: ERROR
+         *                 msg:
+         *                   type: string
+         *                   example: Order not found
+         *       500:
+         *         description: Internal server error.
+         *         content:
+         *           application/json:
+         *             schema:
+         *               type: object
+         *               properties:
+         *                 status:
+         *                   type: integer
+         *                   example: 500
+         *                 statusMsg:
+         *                   type: string
+         *                   example: ERROR
+         *                 msg:
+         *                   type: string
+         *                   example: Something went wrong
+         */
+        this.router.get(`${prefix}/:id/status`,
+            (req, res, next) => this.middleware.validarJwt(req, res, next),
+            this.controller.getStatus)
     }
 }

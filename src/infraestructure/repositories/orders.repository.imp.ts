@@ -33,8 +33,8 @@ export class OrdersRepositoryImpl implements OrdersRepository {
     getAllOrdersByUser(user_id: string): Promise<OrdersEntity[] | CustomResponse> {
         return this.datasource.getAllOrdersByUser(user_id);
     }
-    findById(id: string): Promise<OrdersEntity | CustomResponse> {
-        return this.datasource.findById(id);
+    findById(id: string, user_id: string): Promise<OrdersEntity | CustomResponse> {
+        return this.datasource.findById(id, user_id);
     }
     delete(id: string, user_audits: string): Promise<OrdersEntity | CustomResponse> {
         return this.datasource.delete(id, user_audits);

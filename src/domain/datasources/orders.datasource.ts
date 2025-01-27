@@ -9,7 +9,7 @@ export abstract class OrdersDatasource {
     // abstract create(createProductDto: CreateProductDto, user_audits: string): Promise<ProductEntity | CustomResponse>;
     abstract getAll(page: number, per_page: number, user_id:string): Promise<IOrders | CustomResponse>;
     abstract getAllOrdersByUser(user_id: string): Promise<OrdersEntity[] | CustomResponse>
-    abstract findById(id: string): Promise<OrdersEntity | CustomResponse>;
+    abstract findById(id: string, user_id:string): Promise<OrdersEntity | CustomResponse>;
     // abstract update(id: string, updateProductDto: UpdateProductDto, user_audits: string): Promise<ProductEntity | CustomResponse>;
     abstract delete(id: string, user_audits: string): Promise<OrdersEntity | CustomResponse>;
 

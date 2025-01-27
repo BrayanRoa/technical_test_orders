@@ -6,6 +6,7 @@ import { CreateOrder, IOrderDetail } from "../../domain/use-cases/orders/create-
 import { container } from "../../infraestructure/dependencies/container";
 import { UpdateOrder } from "../../domain/use-cases/orders/update-order";
 import { DeleteOrder } from "../../domain/use-cases/orders/delete-order";
+import { GetOneOrder } from "../../domain/use-cases/orders/get-one-orders";
 
 export class OrdersController {
     constructor(
@@ -93,6 +94,16 @@ export class OrdersController {
         }
 
         new DeleteOrder(this.ordersRepository)
+            .execute(id, userId)
+            .then(message => CustomResponse.handleResponse(res, message, 200))
+            .catch(err => CustomResponse.handleResponse(res, err)
+            )
+    }
+
+    getStatus = (req: Request, res: Response) => {
+        const id = req.params.id
+        const { userId } = req.body
+        new GetOneOrder(this.ordersRepository)
             .execute(id, userId)
             .then(message => CustomResponse.handleResponse(res, message, 200))
             .catch(err => CustomResponse.handleResponse(res, err)

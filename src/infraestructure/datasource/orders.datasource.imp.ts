@@ -65,11 +65,12 @@ export class OrdersDatasourceImp extends BaseDatasource implements OrdersDatasou
 
         })
     }
-    findById(id: string): Promise<OrdersEntity | CustomResponse> {
+    findById(id: string, user_id: string): Promise<OrdersEntity | CustomResponse> {
         return this.handleErrors(async () => {
             const data = await BaseDatasource.prisma.order.findUnique({
                 where: {
                     id: id,
+                    userId: user_id,
                     deletedAt: null
                 }
             })

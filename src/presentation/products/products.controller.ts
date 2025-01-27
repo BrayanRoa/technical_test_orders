@@ -6,6 +6,7 @@ import { GetProducts } from "../../domain/use-cases/products/get-all-products";
 import { GetOneProduct } from "../../domain/use-cases/products/get-one-product";
 import { UpdateProduct } from "../../domain/use-cases/products/update-product";
 import { DeleteProduct } from "../../domain/use-cases/products/delete-product";
+import { CreateProductsByDefault } from "../../domain/use-cases/products/create-by-defafault-product";
 
 export class ProductsController {
     constructor(
@@ -31,27 +32,35 @@ export class ProductsController {
 
     public create = (req: Request, res: Response) => {
         console.log("llegue");
-        const { email_user, ...rest } = req.body
+        const { userId, ...rest } = req.body
         new CreatePruduct(this.productRepository)
-            .execute(rest, email_user)
+            .execute(rest, userId)
             .then(user => CustomResponse.handleResponse(res, user, 201))
             .catch(err => CustomResponse.handleResponse(res, err))
     }
 
     public update = async (req: Request, res: Response) => {
         const id = req.params.id
-        const { email_user, ...rest } = req.body
+        const { userId, ...rest } = req.body
         new UpdateProduct(this.productRepository)
-            .execute(id, rest, email_user)
+            .execute(id, rest, userId)
             .then(user => CustomResponse.handleResponse(res, user, 200))
             .catch(err => CustomResponse.handleResponse(res, err))
     }
 
     public delete = async (req: Request, res: Response) => {
         const id = req.params.id;
-        const { email_user } = req.body
+        const { userId } = req.body
         new DeleteProduct(this.productRepository)
-            .execute(id, email_user)
+            .execute(id, userId)
+            .then(user => CustomResponse.handleResponse(res, user, 200))
+            .catch(err => CustomResponse.handleResponse(res, err))
+    }
+
+    public createByDefault = (req: Request, res: Response) => {
+        const { userId } = req.body
+        new CreateProductsByDefault(this.productRepository)
+            .execute(userId)
             .then(user => CustomResponse.handleResponse(res, user, 200))
             .catch(err => CustomResponse.handleResponse(res, err))
     }

@@ -13,6 +13,7 @@ export class ProductsRoutes extends BaseRouter<ProductsController, ProductMiddle
 
     routes(): void {
         const prefix = "/products"
+
         /**
          * @swagger
          * /products:
@@ -76,6 +77,51 @@ export class ProductsRoutes extends BaseRouter<ProductsController, ProductMiddle
             (req, res, next) => this.middleware.validarJwt(req, res, next),
             this.controller.get
         )
+
+        /**
+         * @swagger
+         * /products/default:
+         *   post:
+         *     tags:
+         *       - Products
+         *     summary: Create default products
+         *     description: Creates 10 default products to simplify testing. Useful for technical tests.
+         *     responses:
+         *       201:
+         *         description: Default products created successfully.
+         *         content:
+         *           application/json:
+         *             schema:
+         *               type: object
+         *               properties:
+         *                 status:
+         *                   type: integer
+         *                   example: 201
+         *                 statusMsg:
+         *                   type: string
+         *                   example: SUCCESS
+         *                 msg:
+         *                   type: string
+         *                   example: Default products created successfully
+         *       500:
+         *         description: Server error.
+         *         content:
+         *           application/json:
+         *             schema:
+         *               type: object
+         *               properties:
+         *                 status:
+         *                   type: integer
+         *                   example: 500
+         *                 statusMsg:
+         *                   type: string
+         *                   example: ERROR
+         *                 msg:
+         *                   type: string
+         *                   example: Something went wrong
+         */
+        this.router.post(`${prefix}/default`, (req, res, next) => this.middleware.validarJwt(req, res, next), this.controller.createByDefault)
+
 
         /**
          * @swagger
