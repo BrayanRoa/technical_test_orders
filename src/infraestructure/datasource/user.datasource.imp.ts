@@ -47,10 +47,13 @@ export class UserDatasourceImp extends BaseDatasource implements UserDatasource 
         return this.handleErrors(async () => {
             const user = await BaseDatasource.prisma.user.findFirst({
                 where: {
-                    AND:
-                        [
-                            { id, deletedAt: null },
-                        ]
+                    OR: [
+                        { email: id },
+                        { id }
+                    ],
+                    AND: [
+                        { deletedAt: null },
+                    ]
                 }
             });
             if (!user) throw new CustomResponse(`User with id ${id} not found`, 404);

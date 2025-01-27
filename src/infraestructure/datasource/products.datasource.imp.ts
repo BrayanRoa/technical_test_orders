@@ -1,5 +1,5 @@
 import { Prisma } from "@prisma/client";
-import { ProductsDatasource } from "../../domain/datasources/products-datasource";
+import { ProductsDatasource } from "../../domain/datasources/products.datasource";
 import { CreateProductDto } from "../../domain/dtos/products/create-product.dto";
 import { UpdateProductDto } from "../../domain/dtos/products/update-product.dto";
 import { ProductEntity } from "../../domain/entities/products/products.entity";
