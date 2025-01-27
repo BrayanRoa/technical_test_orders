@@ -13,10 +13,11 @@ export class OrdersDatasourceImp extends BaseDatasource implements OrdersDatasou
         super()
         this.audit_class = "ORDERS"
     }
-    getAll(page: number, per_page: number): Promise<IOrders | CustomResponse> {
+    getAll(page: number, per_page: number, user_id: string): Promise<IOrders | CustomResponse> {
         return this.handleErrors(async () => {
             const baseWhere = {
-                deletedAt: null
+                deletedAt: null,
+                userId: user_id
             };
 
             const [totalRecords, data] = await Promise.all([
@@ -29,6 +30,13 @@ export class OrdersDatasourceImp extends BaseDatasource implements OrdersDatasou
                     skip: (page - 1) * per_page,
                     orderBy: {
                         createdAt: 'desc'
+                    },
+                    include: {
+                        details: {
+                            include: {
+                                product: true
+                            }
+                        },
                     }
                 }),
             ]);

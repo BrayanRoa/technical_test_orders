@@ -1,4 +1,5 @@
 import { BaseEntity } from "../../../utils/entity/base.entity";
+import { ProductEntity } from "../products/products.entity";
 
 export class OrderDetailEntity extends BaseEntity {
 
@@ -8,6 +9,7 @@ export class OrderDetailEntity extends BaseEntity {
         public productId: string,
         public quantity: number,
         public price: number,
+        public product: ProductEntity,
         public createdAt: Date,
         public updatedAt: Date,
         public deletedAt?: Date,
@@ -22,6 +24,7 @@ export class OrderDetailEntity extends BaseEntity {
             obj.productId,
             obj.quantity,
             obj.price,
+            obj.product,
             obj.createdAt,
             obj.updatedAt,
             obj.deletedAt,

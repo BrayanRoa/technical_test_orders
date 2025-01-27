@@ -39,7 +39,7 @@ export class UpdateOrder implements UpdateOrderUseCase {
         }
         // if (total !== order.total) {
         // actualizar el total de la order
-        await this.repository.update(id_order, { total }, '')
+        await this.repository.update(id_order, { total }, user_id)
         // }
 
         return "Order updated successfully"

@@ -27,8 +27,8 @@ export class OrdersRepositoryImpl implements OrdersRepository {
     create(user_id: string): Promise<CustomResponse | OrdersEntity> {
         return this.datasource.create(user_id)
     }
-    getAll(page: number, per_page: number): Promise<IOrders | CustomResponse> {
-        return this.datasource.getAll(page, per_page)
+    getAll(page: number, per_page: number, user_id: string): Promise<IOrders | CustomResponse> {
+        return this.datasource.getAll(page, per_page, user_id)
     }
     getAllOrdersByUser(user_id: string): Promise<OrdersEntity[] | CustomResponse> {
         return this.datasource.getAllOrdersByUser(user_id);

@@ -3,7 +3,7 @@ import { CustomResponse } from "../../../utils/response/custom.response";
 import { OrdersRepository } from "../../repositories/orders.repository";
 
 export interface GetOrdersUseCase {
-    execute(page: number, per_page: number): Promise<IOrders | CustomResponse>;
+    execute(page: number, per_page: number, user_id: string): Promise<IOrders | CustomResponse>;
 }
 
 export class GetOrders implements GetOrdersUseCase {
@@ -11,7 +11,7 @@ export class GetOrders implements GetOrdersUseCase {
     constructor(
         private repository: OrdersRepository
     ) { }
-    execute(page: number, per_page: number): Promise<IOrders | CustomResponse> {
-        return this.repository.getAll(page, per_page)
+    execute(page: number, per_page: number, user_id: string): Promise<IOrders | CustomResponse> {
+        return this.repository.getAll(page, per_page, user_id)
     }
 }

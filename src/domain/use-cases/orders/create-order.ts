@@ -20,11 +20,11 @@ export class CreateOrder implements CreateOrderUseCase {
         private userRepository: UserRepository
     ) { }
     async execute(user_id: string, details: IOrderDetail[]): Promise<CustomResponse | string> {
-        const user = await this.userRepository.findById(user_id);
-        if (user instanceof CustomResponse) {
-            return user
-        }
-        const order = await this.repository.create(user.id)
+        // const user = await this.userRepository.findById(user_id);
+        // if (user instanceof CustomResponse) {
+        //     return user
+        // }
+        const order = await this.repository.create(user_id)
 
         let total_order = 0
         if (order instanceof CustomResponse) {

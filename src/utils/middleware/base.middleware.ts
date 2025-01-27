@@ -46,30 +46,39 @@ export class SharedMiddleware<T extends {}, U extends {}> {
     //     next()
     // }
 
-    async validarJwt(req: Request, res: Response, next: NextFunction) {
+    public async validarJwt(req: Request, res: Response, next: NextFunction) {
         const authorization = req.header("Authorization");
-        if (!authorization) return CustomResponse.Unauthorized(res, `there are no token on the request`);
+        if (!authorization)
+            return CustomResponse.Unauthorized(res, `There is no token on the request`);
 
-        if (!authorization.startsWith("Bearer ")) return CustomResponse.Unauthorized(res, `invalid Bearer token`);
+        if (!authorization.startsWith("Bearer "))
+            return CustomResponse.Unauthorized(res, `Invalid Bearer token`);
 
-        const token = authorization.split(" ")[1] || "" 
+        const token = authorization.split(" ")[1] || "";
 
         try {
             const payload = await JwtAdapter.decodeToken<{ id: string }>(token);
-            if (!payload) return CustomResponse.Unauthorized(res, `Token invalid - Contact the administrator`);
+            if (!payload)
+                return CustomResponse.Unauthorized(
+                    res,
+                    `Token invalid - Contact the administrator`
+                );
 
             const user = await BaseDatasource.prisma.user.findFirst({
                 where: {
-                    id: payload.id
-                }
-            })
-            if (!user) return CustomResponse.Unauthorized(res, `Token invalid - Contact the administrator`);
+                    id: payload.id,
+                },
+            });
+            if (!user)
+                return CustomResponse.Unauthorized(
+                    res,
+                    `Token invalid - Contact the administrator`
+                );
 
-            req.body.email_user = user.email;
+            req.body.userId = user.id;
             next();
-
         } catch (error: any) {
-            CustomResponse.Unauthorized(res, error)
+            CustomResponse.Unauthorized(res, error);
         }
     }
 
