@@ -181,3 +181,15 @@ This project uses the **Repository Pattern** to abstract database operations. Th
 3. The use case interacts with a **repository** in the infrastructure layer to perform the necessary database operations.
 4. The repository communicates with the database and returns the result to the use case.
 5. The use case processes the result and sends it back to the controller.
+
+## 🛡️ Audit Table
+
+To ensure security and track changes, this project includes an **Audit Table**. Any changes, such as `CREATE`, `UPDATE`, or `DELETE` operations, are logged in this table. This allows:
+
+- **Tracking Changes:** Detailed records of who made changes and when.
+- **Security:** Monitoring unauthorized or suspicious activities.
+- **Accountability:** A clear history of modifications for debugging or compliance purposes.
+
+---
+
+By combining **Clean Architecture**, the **Repository Pattern**, and the **Audit Table**, this project ensures a robust, secure, and maintainable structure for development.

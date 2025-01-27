@@ -1,3 +1,4 @@
+.env
 node_modules
 .env.development
 
@@ -5,4 +6,3 @@ postgres/
 coverage/
 build/
 dist/
-.env

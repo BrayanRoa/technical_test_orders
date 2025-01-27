@@ -21,6 +21,21 @@ export class OrdersRoutes extends BaseRouter<OrdersController, OrdersMiddleware,
          *    tags: [Orders]
          *    summary: Get all orders.
          *    description: Retrieves a list of all orders with details about the user and products.
+         *    parameters:
+         *      - name: page
+         *        in: query
+         *        description: Page number for pagination.
+         *        required: false
+         *        schema:
+         *          type: integer
+         *          example: 1
+         *      - name: per_page
+         *        in: query
+         *        description: Number of orders per page.
+         *        required: false
+         *        schema:
+         *          type: integer
+         *          example: 10
          *    responses:
          *      '200':
          *        description: List of orders retrieved successfully.
@@ -128,6 +143,7 @@ export class OrdersRoutes extends BaseRouter<OrdersController, OrdersMiddleware,
          *                  type: string
          *                  example: An error occurred while retrieving orders.
          */
+
         this.router.get(`${prefix}`,
             (req, res, next) => this.middleware.validarJwt(req, res, next),
             this.controller.get

@@ -13,7 +13,7 @@ export class RegisterUser implements RegisterUserUseCase {
     async execute(dto: CreateUserDto): Promise<string | CustomResponse> {
         const resp = await this.authRepository.registerUser(dto)
         if (resp instanceof CustomResponse) return resp
-        return "User registered successfully, please verify your email address"
+        return "User registered successfully"
     }
 
 }
