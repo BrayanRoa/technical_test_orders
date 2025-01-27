@@ -1,4 +1,5 @@
 import { OrdersDatasource } from "../../domain/datasources/orders.datasource";
+import { UpdateOrderDetailDto } from "../../domain/dtos/orders/update-order-detail.dto";
 import { UpdateOrderDto } from "../../domain/dtos/orders/update-order.dto";
 import { OrderDetailEntity } from "../../domain/entities/orders/orders-detail.entity";
 import { OrdersEntity } from "../../domain/entities/orders/orders.entity";
@@ -122,10 +123,45 @@ export class OrdersDatasourceImp extends BaseDatasource implements OrdersDatasou
                     price
                 }
             })
+            console.log(data);
             if (!(data instanceof OrderDetailEntity)) {
                 return false
             }
             return true
+        })
+    }
+
+    getOrderDetailByOrderId(orderId: string): Promise<CustomResponse | OrdersEntity> {
+        console.log(orderId);
+        return this.handleErrors(async () => {
+            const data = await BaseDatasource.prisma.order.findFirst({
+                where: {
+                    id: orderId
+                },
+                include: {
+                    details: true
+                }
+            })
+
+            if (!data) {
+                return new CustomResponse("Order not found", 404)
+            }
+            return OrdersEntity.fromObject(data)
+        })
+    }
+
+    updateOrderDetail(id: string, data: UpdateOrderDetailDto, user_id: string): Promise<CustomResponse | OrderDetailEntity> {
+        return this.handleErrors(async () => {
+            const action = await BaseDatasource.prisma.orderDetail.update({
+                where: { id },
+                data
+            })
+
+            if (!(action instanceof OrderDetailEntity)) {
+                return new CustomResponse("error", 400)
+            }
+            this.auditSave(action, "UPDATE", user_id)
+            return OrderDetailEntity.fromObject(action)
         })
     }
 

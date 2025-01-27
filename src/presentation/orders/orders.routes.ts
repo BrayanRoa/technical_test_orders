@@ -359,7 +359,119 @@ export class OrdersRoutes extends BaseRouter<OrdersController, OrdersMiddleware,
          *                   type: string
          *                   example: Something went wrong
          */
+        this.router.post(`${prefix}`,
+            (req, res, next) => this.middleware.validarJwt(req, res, next),
+            this.controller.create)
 
-        this.router.post(`${prefix}`, (req, res, next) => this.middleware.validarJwt(req, res, next), this.controller.create)
+        /**
+         * @swagger
+         * /orders/{id}:
+         *   put:
+         *     tags: [Orders]
+         *     summary: Update an existing order.
+         *     description: Updates an order with new details and the user email.
+         *     parameters:
+         *       - in: path
+         *         name: id
+         *         required: true
+         *         description: The ID of the order to update.
+         *         schema:
+         *           type: string
+         *     requestBody:
+         *       required: true
+         *       content:
+         *         application/json:
+         *           schema:
+         *             type: object
+         *             required:
+         *               - email_user
+         *               - details
+         *             properties:
+         *               details:
+         *                 type: array
+         *                 description: Array of product details to update the order.
+         *                 items:
+         *                   type: object
+         *                   required:
+         *                     - productId
+         *                     - quantity
+         *                   properties:
+         *                     productId:
+         *                       type: string
+         *                       description: The unique identifier for the product being ordered.
+         *                       example: "a8f9b824-b041-4b71-84a0-df4609f0193b"
+         *                     quantity:
+         *                       type: integer
+         *                       description: The quantity of the product.
+         *                       example: 3
+         *     responses:
+         *       '200':
+         *         description: Order updated successfully.
+         *         content:
+         *           application/json:
+         *             schema:
+         *               type: object
+         *               properties:
+         *                 status:
+         *                   type: integer
+         *                   example: 200
+         *                 statusMsg:
+         *                   type: string
+         *                   example: SUCCESS
+         *                 msg:
+         *                   type: string
+         *                   example: Order updated successfully.
+         *       '400':
+         *         description: Invalid input data.
+         *         content:
+         *           application/json:
+         *             schema:
+         *               type: object
+         *               properties:
+         *                 status:
+         *                   type: integer
+         *                   example: 400
+         *                 statusMsg:
+         *                   type: string
+         *                   example: ERROR
+         *                 msg:
+         *                   type: string
+         *                   example: Invalid input details.
+         *       '404':
+         *         description: Order or user not found.
+         *         content:
+         *           application/json:
+         *             schema:
+         *               type: object
+         *               properties:
+         *                 status:
+         *                   type: integer
+         *                   example: 404
+         *                 statusMsg:
+         *                   type: string
+         *                   example: ERROR
+         *                 msg:
+         *                   type: string
+         *                   example: Order or user not found.
+         *       '500':
+         *         description: Server error.
+         *         content:
+         *           application/json:
+         *             schema:
+         *               type: object
+         *               properties:
+         *                 status:
+         *                   type: integer
+         *                   example: 500
+         *                 statusMsg:
+         *                   type: string
+         *                   example: ERROR
+         *                 msg:
+         *                   type: string
+         *                   example: Something went wrong.
+         */
+        this.router.put(`${prefix}/:id`,
+            (req, res, next) => this.middleware.validarJwt(req, res, next),
+            this.controller.updateOrder)
     }
 }

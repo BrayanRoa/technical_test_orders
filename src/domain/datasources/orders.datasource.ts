@@ -1,6 +1,8 @@
 import { IOrders } from "../../utils/interfaces/response-paginate.interface";
 import { CustomResponse } from "../../utils/response/custom.response";
+import { UpdateOrderDetailDto } from "../dtos/orders/update-order-detail.dto";
 import { UpdateOrderDto } from "../dtos/orders/update-order.dto";
+import { OrderDetailEntity } from "../entities/orders/orders-detail.entity";
 import { OrdersEntity } from "../entities/orders/orders.entity";
 
 export abstract class OrdersDatasource {
@@ -14,4 +16,8 @@ export abstract class OrdersDatasource {
     abstract create(user_id: string): Promise<CustomResponse | OrdersEntity>
     abstract update(id: string, dto: UpdateOrderDto, user_id: string): Promise<CustomResponse | OrdersEntity>
     abstract cretaeOrderDetail(orderId: string, product_id: string, quantity: number, price: number): Promise<CustomResponse | boolean>
+    abstract getOrderDetailByOrderId(orderId: string): Promise<CustomResponse | OrdersEntity>
+
+    abstract updateOrderDetail(id: string, data: UpdateOrderDetailDto, user_id: string): Promise<CustomResponse | OrderDetailEntity>
+
 }

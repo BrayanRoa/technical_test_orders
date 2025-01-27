@@ -5,6 +5,7 @@ import { CustomResponse } from "../../utils/response/custom.response";
 import { GetOrdersByUser } from "../../domain/use-cases/orders/get-orders-users";
 import { CreateOrder, IOrderDetail } from "../../domain/use-cases/orders/create-order";
 import { container } from "../../infraestructure/dependencies/container";
+import { UpdateOrder } from "../../domain/use-cases/orders/update-order";
 
 export class OrdersController {
     constructor(
@@ -52,6 +53,38 @@ export class OrdersController {
         const data: IOrderDetail[] = details
         new CreateOrder(this.ordersRepository, container.cradle.productRepository, container.cradle.userRepository)
             .execute(email_user, data)
+            .then(message => CustomResponse.handleResponse(res, message, 200))
+            .catch(err => CustomResponse.handleResponse(res, err)
+            )
+    }
+
+
+    updateOrder = (req: Request, res: Response) => {
+        const { email_user, details } = req.body
+        const id = req.params.id
+        console.log({id});
+        if (!Array.isArray(details) || details.length === 0) {
+            throw new Error("Details must be a non-empty array");
+        }
+
+        // Validar cada elemento de `details`
+        details.forEach((detail, index) => {
+            if (typeof detail.productId !== "string" || detail.productId.trim() === "") {
+                throw new Error(`Details[${index}]: productId must be a non-empty string`);
+            }
+            if (typeof detail.quantity !== "number" || detail.quantity <= 0) {
+                throw new Error(`Details[${index}]: quantity must be a positive number`);
+            }
+        });
+
+        // Validar que `userId` sea un string
+        if (typeof email_user !== "string" || email_user.trim() === "") {
+            throw new Error("userId must be a non-empty string");
+        }
+
+        const data: IOrderDetail[] = details
+        new UpdateOrder(this.ordersRepository, container.cradle.productRepository, container.cradle.userRepository)
+            .execute(id, data, email_user)
             .then(message => CustomResponse.handleResponse(res, message, 200))
             .catch(err => CustomResponse.handleResponse(res, err)
             )
