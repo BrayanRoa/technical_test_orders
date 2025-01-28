@@ -27,45 +27,76 @@ export class UpdateOrder implements UpdateOrderUseCase {
                 return order;  // Retorna CustomResponse si la orden no existe o hay un error
             }
 
-            let total = 0;
-
+            // Primero, agregar o actualizar los detalles de la orden sin calcular el total
             for (const detail of details) {
-                for (const a of order.detail!) {
-                    if (a.productId === detail.productId && a.quantity !== detail.quantity) {
-                        const product = await this.productRepository.findById(detail.productId);
-                        if (product instanceof CustomResponse) {
-                            return new CustomResponse("Product not found", 404);
-                        }
+                let productFound = false;  // Para verificar si el producto ya está en la orden
 
-                        // Calcular la diferencia de cantidad
+                for (const a of order.detail!) {
+                    if (a.productId === detail.productId) {
+                        // Si el producto ya existe, actualizamos la cantidad
                         const quantityDifference = detail.quantity - a.quantity;
 
                         if (quantityDifference > 0) {
                             // Si la nueva cantidad es mayor, aseguramos que haya stock suficiente
+                            const product = await this.productRepository.findById(detail.productId);
+                            if (product instanceof CustomResponse) {
+                                return new CustomResponse("Product not found", 404);
+                            }
+
                             if (product.stock < quantityDifference) {
                                 return new CustomResponse(`Not enough stock for product: ${product.name}`, 400);
                             }
+
                             // Actualizamos el stock restando la diferencia
                             await this.productRepository.update(detail.productId, { stock: product.stock - quantityDifference }, user_id);
                         } else if (quantityDifference < 0) {
                             // Si la nueva cantidad es menor, sumamos la diferencia al stock
+                            const product = await this.productRepository.findById(detail.productId);
+                            if (product instanceof CustomResponse) {
+                                return new CustomResponse("Product not found", 404);
+                            }
+
                             await this.productRepository.update(detail.productId, { stock: product.stock + Math.abs(quantityDifference) }, user_id);
                         }
 
                         // Actualizar el detalle de la orden con la nueva cantidad
                         a.quantity = detail.quantity;
-                        total += a.quantity * a.price;
 
                         // Actualizar el detalle en la base de datos
                         await this.repository.updateOrderDetail(a.id, { quantity: detail.quantity }, user_id);
-                    } else {
-                        // Si no hay cambio en la cantidad, simplemente sumamos al total
-                        total += a.quantity * a.price;
+                        productFound = true;
+                        break; // Producto encontrado, salimos del ciclo
                     }
+                }
+
+                // Si el producto no estaba en la orden, lo agregamos
+                if (!productFound) {
+                    const product = await this.productRepository.findById(detail.productId);
+                    if (product instanceof CustomResponse) {
+                        return new CustomResponse("Product not found", 404);
+                    }
+
+                    // Agregar el nuevo producto a la base de datos
+                    await this.repository.cretaeOrderDetail(order.id, detail.productId, detail.quantity, product.price);
+                    await this.productRepository.update(detail.productId, { stock: product.stock - detail.quantity }, user_id);
                 }
             }
 
-            // Actualizar el total de la orden
+            // Ahora calculamos el total de la orden sumando todos los detalles
+            let total = 0;
+            const orderDetails = await this.repository.getOrderDetailByOrderId(id_order);
+            if (orderDetails instanceof CustomResponse) {
+                return orderDetails;  // Retorna CustomResponse si la orden no existe o hay un error
+            }
+            for (const detail of orderDetails.detail!) {
+                const product = await this.productRepository.findById(detail.productId);
+                if (product instanceof CustomResponse) {
+                    return new CustomResponse("Product not found", 404);
+                }
+                total += detail.quantity * product.price;
+            }
+
+            // Actualizamos el total de la orden con la suma
             await this.repository.update(id_order, { total }, user_id);
 
             return "Order updated successfully";  // Mensaje de éxito
