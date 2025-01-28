@@ -42,6 +42,7 @@ model Product {
   name        String
   description String?
   price       Float
+  stock       Int       @default(0)
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   deletedAt   DateTime? // Puede ser null si el producto no está eliminado

@@ -23,40 +23,59 @@ export class OrdersController {
     }
 
     public create = (req: Request, res: Response) => {
-        const { userId, details } = req.body
+        const { userId, details } = req.body;
 
-        if (!Array.isArray(details) || details.length === 0) {
-            throw new Error("Details must be a non-empty array");
-        }
+        try {
+            // Validación centralizada
+            this.validateOrderDetails(details, userId);
 
-        // Validar cada elemento de `details`
-        details.forEach((detail, index) => {
-            if (typeof detail.productId !== "string" || detail.productId.trim() === "") {
-                throw new Error(`Details[${index}]: productId must be a non-empty string`);
+            const data: IOrderDetail[] = details;
+            new CreateOrder(this.ordersRepository, container.cradle.productRepository, container.cradle.userRepository)
+                .execute(userId, data)
+                .then(message => CustomResponse.handleResponse(res, message, 200))
+                .catch(err => CustomResponse.handleResponse(res, err));
+
+        } catch (error) {
+            // Manejo de errores
+            if (error instanceof Error) {
+                CustomResponse.handleResponse(res, new CustomResponse(error.message, 400), 400);
+            } else {
+                CustomResponse.handleResponse(res, new CustomResponse("An error occurred while creating the order", 500), 500);
             }
-            if (typeof detail.quantity !== "number" || detail.quantity <= 0) {
-                throw new Error(`Details[${index}]: quantity must be a positive number`);
-            }
-        });
-
-        // Validar que `userId` sea un string
-        if (typeof userId !== "string" || userId.trim() === "") {
-            throw new Error("userId must be a non-empty string");
         }
-
-        const data: IOrderDetail[] = details
-        new CreateOrder(this.ordersRepository, container.cradle.productRepository, container.cradle.userRepository)
-            .execute(userId, data)
-            .then(message => CustomResponse.handleResponse(res, message, 200))
-            .catch(err => CustomResponse.handleResponse(res, err)
-            )
-    }
-
+    };
 
     updateOrder = (req: Request, res: Response) => {
-        const { userId, details } = req.body
-        const id = req.params.id
+        const { userId, details } = req.body;
+        const id = req.params.id;
 
+        try {
+            // Validación centralizada
+            this.validateOrderDetails(details, userId);
+
+            const data: IOrderDetail[] = details;
+
+            // Llamar a la función de actualización de la orden y manejar la respuesta
+            new UpdateOrder(this.ordersRepository, container.cradle.productRepository, container.cradle.userRepository)
+                .execute(id, data, userId)
+                .then(message => {
+                    CustomResponse.handleResponse(res, message, 200);
+                })
+                .catch(err => {
+                    CustomResponse.handleResponse(res, new CustomResponse(err.message, 400), 400);
+                });
+
+        } catch (error) {
+            // Manejo de errores
+            if (error instanceof Error) {
+                CustomResponse.handleResponse(res, new CustomResponse(error.message, 400), 400);
+            } else {
+                CustomResponse.handleResponse(res, new CustomResponse("An error occurred while updating the order", 500), 500);
+            }
+        }
+    };
+
+    validateOrderDetails = (details: any[], userId: string) => {
         if (!Array.isArray(details) || details.length === 0) {
             throw new Error("Details must be a non-empty array");
         }
@@ -66,7 +85,7 @@ export class OrdersController {
             if (typeof detail.productId !== "string" || detail.productId.trim() === "") {
                 throw new Error(`Details[${index}]: productId must be a non-empty string`);
             }
-            if (typeof detail.quantity !== "number" || detail.quantity <= 0) {
+            if (typeof detail.quantity !== "number" || detail.quantity < 0) {
                 throw new Error(`Details[${index}]: quantity must be a positive number`);
             }
         });
@@ -75,14 +94,9 @@ export class OrdersController {
         if (typeof userId !== "string" || userId.trim() === "") {
             throw new Error("userId must be a non-empty string");
         }
+    };
 
-        const data: IOrderDetail[] = details
-        new UpdateOrder(this.ordersRepository, container.cradle.productRepository, container.cradle.userRepository)
-            .execute(id, data, userId)
-            .then(message => CustomResponse.handleResponse(res, message, 200))
-            .catch(err => CustomResponse.handleResponse(res, err)
-            )
-    }
+
 
     delete = (req: Request, res: Response) => {
         const id = req.params.id

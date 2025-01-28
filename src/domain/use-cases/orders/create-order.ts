@@ -38,9 +38,12 @@ export class CreateOrder implements CreateOrderUseCase {
                 throw new CustomResponse("Product not found", 404);
             }
 
+            if (product.stock < detail.quantity) {
+                throw new CustomResponse(`Not enough stock for product ${product.name}`, 400);
+            }
             // creo el detalle del pedido
             await this.repository.cretaeOrderDetail(order.id, detail.productId, detail.quantity, product.price);
-
+            await this.productRepository.update(detail.productId, { stock: product.stock - detail.quantity }, user_id)
             // voy actualizando  el total del pedido
             total_order += detail.quantity * product.price;
         }

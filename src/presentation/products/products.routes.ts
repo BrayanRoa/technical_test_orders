@@ -147,6 +147,9 @@ export class ProductsRoutes extends BaseRouter<ProductsController, ProductMiddle
          *                type: number
          *                format: float
          *                example: 999.99
+         *              stock:
+         *                type: number
+         *                example: 10
          *    responses:
          *      '201':
          *        description: Product created successfully.

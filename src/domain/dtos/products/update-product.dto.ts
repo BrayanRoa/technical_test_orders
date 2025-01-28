@@ -13,4 +13,8 @@ export class UpdateProductDto {
     @IsOptional()
     public readonly price?: number;
 
+    @IsNumber()
+    @IsOptional()
+    public readonly stock?: number;
+
 }

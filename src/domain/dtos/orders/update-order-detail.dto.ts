@@ -1,4 +1,4 @@
-import { IsNumber, IsOptional, IsString } from "class-validator";
+import { IsNumber, IsOptional, IsString, Min } from "class-validator";
 
 export class UpdateOrderDetailDto {
 
@@ -16,5 +16,6 @@ export class UpdateOrderDetailDto {
 
     @IsNumber()
     @IsOptional()
+    @Min(0)  // Permite 0 como valor válido
     public readonly quantity?: number;
 }

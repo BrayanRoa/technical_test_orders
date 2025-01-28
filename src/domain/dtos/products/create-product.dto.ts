@@ -13,4 +13,8 @@ export class CreateProductDto {
     @IsNotEmpty()
     public readonly price!: number;
 
+    @IsNumber()
+    @IsNotEmpty()
+    public readonly stock!: number;
+
 }
