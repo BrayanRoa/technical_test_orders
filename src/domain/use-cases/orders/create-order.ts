@@ -17,7 +17,6 @@ export class CreateOrder implements CreateOrderUseCase {
     constructor(
         private repository: OrdersRepository,
         private productRepository: ProductsRepository,
-        private userRepository: UserRepository
     ) { }
     async execute(user_id: string, details: IOrderDetail[]): Promise<CustomResponse | string> {
         // const user = await this.userRepository.findById(user_id);

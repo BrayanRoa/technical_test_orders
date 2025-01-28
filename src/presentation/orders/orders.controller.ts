@@ -26,17 +26,15 @@ export class OrdersController {
         const { userId, details } = req.body;
 
         try {
-            // Validación centralizada
             this.validateOrderDetails(details, userId);
 
             const data: IOrderDetail[] = details;
-            new CreateOrder(this.ordersRepository, container.cradle.productRepository, container.cradle.userRepository)
+            new CreateOrder(this.ordersRepository, container.cradle.productRepository)
                 .execute(userId, data)
                 .then(message => CustomResponse.handleResponse(res, message, 200))
                 .catch(err => CustomResponse.handleResponse(res, err));
 
         } catch (error) {
-            // Manejo de errores
             if (error instanceof Error) {
                 CustomResponse.handleResponse(res, new CustomResponse(error.message, 400), 400);
             } else {
@@ -50,13 +48,11 @@ export class OrdersController {
         const id = req.params.id;
 
         try {
-            // Validación centralizada
             this.validateOrderDetails(details, userId);
 
             const data: IOrderDetail[] = details;
 
-            // Llamar a la función de actualización de la orden y manejar la respuesta
-            new UpdateOrder(this.ordersRepository, container.cradle.productRepository, container.cradle.userRepository)
+            new UpdateOrder(this.ordersRepository, container.cradle.productRepository)
                 .execute(id, data, userId)
                 .then(message => {
                     CustomResponse.handleResponse(res, message, 200);
@@ -66,7 +62,6 @@ export class OrdersController {
                 });
 
         } catch (error) {
-            // Manejo de errores
             if (error instanceof Error) {
                 CustomResponse.handleResponse(res, new CustomResponse(error.message, 400), 400);
             } else {
@@ -95,7 +90,6 @@ export class OrdersController {
             throw new Error("userId must be a non-empty string");
         }
     };
-
 
 
     delete = (req: Request, res: Response) => {

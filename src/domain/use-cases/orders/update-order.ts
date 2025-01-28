@@ -17,7 +17,6 @@ export class UpdateOrder implements UpdateOrderUseCase {
     constructor(
         private repository: OrdersRepository,
         private productRepository: ProductsRepository,
-        private userRepository: UserRepository
     ) { }
 
     async execute(id_order: string, details: IOrderDetail[], user_id: string): Promise<CustomResponse | string> {
